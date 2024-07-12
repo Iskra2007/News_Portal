@@ -1,0 +1,61 @@
+from django.contrib.auth.models import User
+user1 = User.objects.create_user('user1')
+user2=User.objects.create_user('user2')
+
+
+from news.models import Author
+author1 = Author.objects.create(user=user1)
+author2 = Author.objects.create(user=user2)
+
+
+from news.models import Category
+Category.objects.create(name='Category 0')
+Category.objects.create(name='Category 1')
+Category.objects.create(name='Category 2')
+Category.objects.create(name='Category 3')
+
+
+from news.models import Post, Category
+
+category1 = Category.objects.get(name='Category 1')
+category2 = Category.objects.get(name='Category 2')
+category3 = Category.objects.get(name='Category 3')
+
+article1 = Post.objects.create(author=author1, article_or_news='article', title='Article 1', text='Text for Article 1')
+article1.category.add(category1)
+article2 = Post.objects.create(author=author2, article_or_news='article', title='Article 2', text='Text for Article 2')
+article2.category.add(category2)
+news1 = Post.objects.create(author=author2, article_or_news='news', title='News 1', text='Text for News 1')
+news1.category.add(category3)
+
+from news.models import Comment
+comment1 = Comment.objects.create(post=article1, user=user1, text='тест')
+comment2 = Comment.objects.create(post=article2, user=user2, text='тест')
+comment3 = Comment.objects.create(post=article2, user=user2, text='текст')
+comment4 = Comment.objects.create(post=news1, user=user1, text='текст')
+
+comment1.save()
+comment2.save()
+comment3.save()
+comment4.save()
+
+comment1.like()
+comment2.dislike()
+news1.like()
+article2.dislike()
+article2.dislike()
+article1.like()
+article1.like()
+
+authors = Author.objects.all()
+for author in authors:
+	author.update_rating()
+
+article = Article.objects.get(id=article_id)
+comments = Comment.objects.filter(article=article)
+
+for comment in comments:
+    print(comment.date)
+    print(comment.user)
+    print(comment.rating)
+    print(comment.text)
